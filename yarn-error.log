@@ -1,0 +1,52 @@
+Arguments: 
+  /home/saranrajshri/.nvm/versions/node/v16.8.0/bin/node /home/saranrajshri/.nvm/versions/node/v16.8.0/bin/yarn install
+
+PATH: 
+  /home/saranrajshri/.nvm/versions/node/v16.8.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+
+Yarn version: 
+  1.22.11
+
+Node version: 
+  16.8.0
+
+Platform: 
+  linux x64
+
+Trace: 
+  Error: ENOENT: no such file or directory, open '/home/saranrajshri/.cache/yarn/v6/npm-@types-node-18.7.7-2f7e3443fb434315ff594c49043486fe49937182-integrity/node_modules/@types/node/.yarn-metadata.json'
+
+npm manifest: 
+  {
+    "name": "auth",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "start": "node index.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+      "bcryptjs": "^2.4.3",
+      "body-parser": "^1.19.0",
+      "cors": "^2.8.5",
+      "dotenv": "^16.0.1",
+      "express": "^4.17.1",
+      "express-validator": "^6.3.0",
+      "jsonwebtoken": "^8.5.1",
+      "mongoose": "^5.13.14",
+      "mongoose-paginate-v2": "^1.7.0",
+      "react-toastify": "^9.0.7"
+    },
+    "engines": {
+      "node": "17.6.0",
+      "npm": "8.5.1"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
