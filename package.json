@@ -21,9 +21,5 @@
     "mongoose-paginate-v2": "^1.7.0",
     "nodemon": "^2.0.19",
     "react-toastify": "^9.0.7"
-  },
-  "engines": {
-    "node": "17.6.0",
-    "npm": "8.5.1"
   }
 }

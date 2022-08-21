@@ -5,7 +5,8 @@ const mongoose = require("mongoose");
 const InitiateMongoServer = async () => {
   try {
     await mongoose.connect(
-      "mongodb+srv://saran1234:saran1234@cluster0.rxropif.mongodb.net/?retryWrites=true&w=majority",
+      process.env.DATABASE_URI ||
+        "mongodb+srv://saran1234:saran1234@cluster0.rxropif.mongodb.net/?retryWrites=true&w=majority",
       {
         useNewUrlParser: true,
         useCreateIndex: true,
