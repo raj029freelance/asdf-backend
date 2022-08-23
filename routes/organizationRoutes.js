@@ -15,6 +15,7 @@ router
   .get(organizationController.getAllQueries)
   .post(organizationController.postQuery);
 router.route("/query/:id").delete(organizationController.deleteQuery);
+router.route("/query/edit/:id").post(organizationController.updateQuery);
 router
   .route("/:id")
   .get(organizationController.getOrganization)

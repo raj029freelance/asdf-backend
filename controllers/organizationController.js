@@ -145,7 +145,7 @@ exports.deleteOrganization = async (req, res) => {
 
 exports.getAllQueries = async (req, res) => {
   try {
-    const queries = await QueryModel.find({ resolved: false });
+    const queries = await QueryModel.find({});
     res.status(200).json({
       status: "success",
       results: queries.length,
@@ -168,6 +168,29 @@ exports.postQuery = async (req, res) => {
     });
   } catch (err) {
     res.status(400).json({
+      status: "fail",
+      message: err,
+    });
+  }
+};
+
+exports.updateQuery = async (req, res) => {
+  try {
+    const updatedQuery = await QueryModel.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+      }
+    );
+    res.status(200).json({
+      status: "success",
+      data: {
+        query: updatedQuery,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
       status: "fail",
       message: err,
     });
