@@ -2,7 +2,7 @@ const Faq = require("../model/faqModel");
 
 exports.getAllFaq = async (req, res) => {
   try {
-    const faqs = await Faq.find({});
+    const faqs = await Faq.find({}).sort({ _id: -1 });
     res.status(200).json({
       result: faqs.length,
       data: faqs,
