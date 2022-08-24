@@ -15,6 +15,20 @@ exports.getAllFaq = async (req, res) => {
   }
 };
 
+exports.getFaqById = async (req, res) => {
+  try {
+    const faqs = await Faq.find({ _id: req.params.id });
+    res.status(200).json({
+      data: faqs,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 404,
+      message: err,
+    });
+  }
+};
+
 exports.createFaq = async (req, res) => {
   try {
     const faq = new Faq(req.body);
@@ -39,6 +53,25 @@ exports.editFaq = async (req, res) => {
       status: "success",
       data: {
         query: updatedFaq,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: "fail",
+      message: err,
+    });
+  }
+};
+
+exports.deleteFaq = async (req, res) => {
+  try {
+    const updatedFaq = await Faq.findByIdAndDelete(req.params.id).sort({
+      _id: -1,
+    });
+    res.status(200).json({
+      status: "success",
+      data: {
+        mesage: "Deleted",
       },
     });
   } catch (err) {
