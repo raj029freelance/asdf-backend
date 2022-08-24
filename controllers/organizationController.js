@@ -145,7 +145,7 @@ exports.deleteOrganization = async (req, res) => {
 
 exports.getAllQueries = async (req, res) => {
   try {
-    const queries = await QueryModel.find({});
+    const queries = await QueryModel.find({}).sort({ _id: -1 });
     res.status(200).json({
       status: "success",
       results: queries.length,

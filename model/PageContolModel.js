@@ -14,6 +14,10 @@ const pageControl = mongoose.Schema({
     type: String,
     required: true,
   },
+  siteLogo: {
+    type: String,
+    required: true,
+  },
 });
 
 // export model user with UserSchema

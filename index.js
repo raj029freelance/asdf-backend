@@ -6,6 +6,8 @@ var cors = require("cors");
 const organizationRoutes = require("./routes/organizationRoutes");
 const searchRoutes = require("./routes/searchRoutes");
 const pageControlRoutes = require("./routes/pageControlRoutes");
+const faqRoutes = require("./routes/faqRoutes");
+
 dotenv.config();
 const InitiateMongoServer = require("./config/db");
 // Initiate Mongo Server
@@ -39,6 +41,7 @@ app.use("/api/user", user);
 app.use("/api/organizations", organizationRoutes);
 app.use("/api/recentSearch", searchRoutes);
 app.use("/api/pageControl", pageControlRoutes);
+app.use("/api/faq", faqRoutes);
 
 app.listen(process.env.PORT || 4000, (req, res) => {
   console.log(`Server Started at PORT ${process.env.PORT}`);
