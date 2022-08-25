@@ -14,7 +14,6 @@ exports.getPageData = async (req, res) => {
       },
     });
   } catch (err) {
-    console.log(err);
     res.status(400).json({
       status: 404,
       message: err,
@@ -38,7 +37,6 @@ exports.editPageData = async (req, res) => {
       },
     });
   } catch (err) {
-    console.log(err);
     res.status(400).json({
       status: 404,
       message: err,
@@ -58,7 +56,6 @@ exports.createPageData = async (req, res) => {
       },
     });
   } catch (err) {
-    console.log(err);
     res.status(400).json({
       status: 404,
       message: err,

@@ -17,7 +17,7 @@ router
 router.route("/query/:id").delete(organizationController.deleteQuery);
 router.route("/query/edit/:id").post(organizationController.updateQuery);
 router
-  .route("/:id")
+  .route("/:slug")
   .get(organizationController.getOrganization)
   .post(organizationController.updateOrganization)
   .delete(organizationController.deleteOrganization);

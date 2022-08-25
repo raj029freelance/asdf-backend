@@ -28,7 +28,6 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-  console.log("Entereddddddddddddd");
   res.json({ message: "API Working" });
 });
 

@@ -8,6 +8,10 @@ const faqSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  slug: {
+    type: String,
+    required: true,
+  },
 });
 
 const faq = mongoose.model("blog", faqSchema);

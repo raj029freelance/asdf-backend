@@ -1,4 +1,18 @@
 const Faq = require("../model/faqModel");
+const slugify = require("slugify");
+
+const setSlugsIfUndefined = async () => {
+  const faqs = await Faq.find({});
+  faqs.forEach(async ({ _id, slug, title }) => {
+    if (slug) return;
+    await Faq.updateOne(
+      { _id },
+      { $set: { slug: slugify(title.toLowerCase()) } }
+    );
+  });
+};
+
+setSlugsIfUndefined();
 
 exports.getAllFaq = async (req, res) => {
   try {
@@ -15,9 +29,9 @@ exports.getAllFaq = async (req, res) => {
   }
 };
 
-exports.getFaqById = async (req, res) => {
+exports.getFaqBySlug = async (req, res) => {
   try {
-    const faqs = await Faq.find({ _id: req.params.id });
+    const faqs = await Faq.find({ slug: req.params.slug });
     res.status(200).json({
       data: faqs,
     });
@@ -31,7 +45,7 @@ exports.getFaqById = async (req, res) => {
 
 exports.createFaq = async (req, res) => {
   try {
-    const faq = new Faq(req.body);
+    const faq = new Faq({ ...req.body, slug: slugify(req.body.title) });
     const savedFaq = await faq.save();
     res.status(200).json({
       data: savedFaq,

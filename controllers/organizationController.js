@@ -1,5 +1,19 @@
 const Organization = require("../model/organizationModal");
 const QueryModel = require("../model/queryModel");
+const slugify = require("slugify");
+
+const setSlugsIfUndefined = async () => {
+  const orgs = await Organization.find({});
+  orgs.forEach(async ({ _id, slug, CompanyName, PhoneNumber }) => {
+    if (slug) return;
+    await Organization.updateOne(
+      { _id },
+      { $set: { slug: slugify(`${CompanyName.toLowerCase()} ${PhoneNumber}`) } }
+    );
+  });
+};
+
+setSlugsIfUndefined();
 
 exports.getAllOrganization = async (req, res) => {
   try {
@@ -31,9 +45,7 @@ exports.getAllOrganization = async (req, res) => {
 
 exports.getPaginatedOrganization = async (req, res) => {
   try {
-    console.log("Entereddd in thisssss");
     const { page, limit } = req.query;
-    console.log(page, limit, "Entered heree");
     const organizations = await Organization.paginate(
       {},
       { page: Number(page), limit: Number(limit) }
@@ -54,9 +66,9 @@ exports.getPaginatedOrganization = async (req, res) => {
 };
 
 exports.getOrganization = async (req, res) => {
-  const { id } = req.params;
+  const { slug } = req.params;
   try {
-    const organization = await Organization.findById(id);
+    const organization = await Organization.findOne({ slug });
     res.status(200).json({
       status: "success",
       data: {
@@ -72,7 +84,12 @@ exports.getOrganization = async (req, res) => {
 };
 exports.createOrganization = async (req, res) => {
   try {
-    const newOrganization = await Organization.create(req.body);
+    const newOrganization = await Organization.create({
+      ...req.body,
+      slug: slugify(
+        `${req.body.CompanyName.toLowerCase()} ${req.body.PhoneNumber}`
+      ),
+    });
 
     res.status(201).json({
       status: "success",
@@ -107,8 +124,8 @@ exports.insertAllOrganizations = async (req, res) => {
 
 exports.updateOrganization = async (req, res) => {
   try {
-    const updatedOrganization = await Organization.findByIdAndUpdate(
-      req.params.id,
+    const updatedOrganization = await Organization.findOneAndUpdate(
+      { slug: req.params.slug },
       req.body,
       {
         new: true,
@@ -130,7 +147,7 @@ exports.updateOrganization = async (req, res) => {
 
 exports.deleteOrganization = async (req, res) => {
   try {
-    await Organization.findByIdAndDelete(req.params.id);
+    await Organization.findOneAndDelete({ slug: req.params.slug });
     res.status(200).json({
       status: "Successfully Delete",
       data: null,

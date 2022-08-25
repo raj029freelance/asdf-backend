@@ -1,52 +1,56 @@
-const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate-v2');
+const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
 const organizationSchema = new mongoose.Schema({
-    CompanyName : {
-        type : String,
-        required : [true,'Organization must have a name']
-    },
-    CompanyUrl : {
-        type : String,
-    },
+  CompanyName: {
+    type: String,
+    required: [true, "Organization must have a name"],
+  },
+  CompanyUrl: {
+    type: String,
+  },
 
-    PhoneNumber : {
-        type : String ,
-        default : ""
-    },
-    DepartmentYourCalling : {
-        type : String ,
-        default : ""
-    },
-    CallBackAvailable  : {
-        type  : String,
-        enum : ['NO', 'YES'],
-        default : "NO"
-    },
-    CallPickedUpByARealPerson : {
-        type  : String,
-        enum : ['NO', 'YES'],
-        default : "NO"
-    },
-    BestTimeToDail : {
-        type : String ,
-    },
-    CallCenterHours : {
-        type : String ,
-    },
-    CompanyUrl : {
-      type : String
-    },
-    LetterUrl : {
-        type : String
-    },
-    Letter : {
-        type : String
-    },
-    description : {
-        type : String,
-        default : ""
-    }
+  PhoneNumber: {
+    type: String,
+    default: "",
+  },
+  DepartmentYourCalling: {
+    type: String,
+    default: "",
+  },
+  CallBackAvailable: {
+    type: String,
+    enum: ["NO", "YES"],
+    default: "NO",
+  },
+  CallPickedUpByARealPerson: {
+    type: String,
+    enum: ["NO", "YES"],
+    default: "NO",
+  },
+  BestTimeToDail: {
+    type: String,
+  },
+  CallCenterHours: {
+    type: String,
+  },
+  CompanyUrl: {
+    type: String,
+  },
+  LetterUrl: {
+    type: String,
+  },
+  Letter: {
+    type: String,
+  },
+  description: {
+    type: String,
+    default: "",
+  },
+  slug: {
+    type: String,
+    required: true,
+  },
 });
 organizationSchema.plugin(mongoosePaginate);
-const Organization = mongoose.model('Organization' , organizationSchema);
+const Organization = mongoose.model("Organization", organizationSchema);
 module.exports = Organization;
