@@ -29,6 +29,21 @@ exports.getAllFaq = async (req, res) => {
   }
 };
 
+exports.getFaqById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const faq = await Faq.findById(id);
+    res.status(200).json({
+      data: faq,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 404,
+      message: err,
+    });
+  }
+};
+
 exports.getFaqBySlug = async (req, res) => {
   try {
     const faqs = await Faq.find({ slug: req.params.slug });
