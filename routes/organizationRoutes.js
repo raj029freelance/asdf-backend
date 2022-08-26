@@ -9,16 +9,21 @@ router
 router
   .route("/paginated/all")
   .get(organizationController.getPaginatedOrganization);
+
 router.route("/all").post(organizationController.insertAllOrganizations);
+
 router
   .route("/query")
   .get(organizationController.getAllQueries)
   .post(organizationController.postQuery);
+
 router.route("/query/:id").delete(organizationController.deleteQuery);
 router.route("/query/edit/:id").post(organizationController.updateQuery);
+router.route("/slug/:slug").get(organizationController.getOrganization);
+
 router
-  .route("/:slug")
-  .get(organizationController.getOrganization)
+  .route("/:id")
   .post(organizationController.updateOrganization)
   .delete(organizationController.deleteOrganization);
+
 module.exports = router;

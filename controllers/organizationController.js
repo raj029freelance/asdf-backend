@@ -124,8 +124,8 @@ exports.insertAllOrganizations = async (req, res) => {
 
 exports.updateOrganization = async (req, res) => {
   try {
-    const updatedOrganization = await Organization.findOneAndUpdate(
-      { slug: req.params.slug },
+    const updatedOrganization = await Organization.findByIdAndUpdate(
+      req.params.id,
       req.body,
       {
         new: true,
@@ -147,7 +147,7 @@ exports.updateOrganization = async (req, res) => {
 
 exports.deleteOrganization = async (req, res) => {
   try {
-    await Organization.findOneAndDelete({ slug: req.params.slug });
+    await Organization.findByIdAndDelete(req.params.id);
     res.status(200).json({
       status: "Successfully Delete",
       data: null,
