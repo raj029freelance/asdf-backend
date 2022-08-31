@@ -7,6 +7,7 @@ const organizationRoutes = require("./routes/organizationRoutes");
 const searchRoutes = require("./routes/searchRoutes");
 const pageControlRoutes = require("./routes/pageControlRoutes");
 const faqRoutes = require("./routes/faqRoutes");
+const approvalDataRoutes = require("./routes/approvalDataRoutes");
 
 dotenv.config();
 const InitiateMongoServer = require("./config/db");
@@ -41,6 +42,7 @@ app.use("/api/organizations", organizationRoutes);
 app.use("/api/recentSearch", searchRoutes);
 app.use("/api/pageControl", pageControlRoutes);
 app.use("/api/faq", faqRoutes);
+app.use("/api/submissions", approvalDataRoutes);
 
 app.listen(process.env.PORT || 4000, (req, res) => {
   console.log(`Server Started at PORT ${process.env.PORT}`);

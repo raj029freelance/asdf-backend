@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
-const mongoosePaginate = require("mongoose-paginate-v2");
-const organizationSchema = new mongoose.Schema({
+const approvalDataSchema = new mongoose.Schema({
   CompanyName: {
     type: String,
     required: [true, "Organization must have a name"],
@@ -36,11 +35,11 @@ const organizationSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
-  slug: {
-    type: String,
-    required: true,
+  approved: {
+    type: Boolean,
+    default: false,
   },
 });
-organizationSchema.plugin(mongoosePaginate);
-const Organization = mongoose.model("Organization", organizationSchema);
-module.exports = Organization;
+
+const approvalData = mongoose.model("submissions", approvalDataSchema);
+module.exports = approvalData;
