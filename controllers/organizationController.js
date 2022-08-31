@@ -107,6 +107,30 @@ exports.createOrganization = async (req, res) => {
 
 exports.insertAllOrganizations = async (req, res) => {
   try {
+    const organizations = req.body;
+    var subArray = [];
+    var existsCheckQuery = { $or: subArray };
+    for (var i = 0; i < organizations.length; i++) {
+      const name = organizations[i].CompanyName
+        ? organizations[i].CompanyName.split("-")[0].trim()
+        : "";
+      console.log(name);
+      subArray.push({
+        CompanyName: name,
+      });
+    }
+    // console.log(existsCheckQuery);
+    const doesExists = await Organization.find(existsCheckQuery);
+    if (doesExists.length > 0) {
+      res.status(400).json({
+        status: "fail",
+        message:
+          "Duplicate entries.. The following data already exists in the database",
+        orgs: doesExists,
+      });
+      return;
+    }
+    // console.log(doesExists);
     await Organization.insertMany(req.body, { ordered: true });
     res.status(201).json({
       status: "success",
