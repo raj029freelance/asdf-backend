@@ -2,7 +2,7 @@ const Search = require("../model/searchModel");
 const Organization = require("../model/organizationModal");
 const slugify = require("slugify");
 
-const setSlugsIfUndefined = async () => {
+exports.setSlugsIfUndefined = async () => {
   try {
     const recents = await Search.find();
     recents.forEach(async (recent) => {
@@ -24,8 +24,6 @@ const setSlugsIfUndefined = async () => {
     console.log("Slugs not created for all search");
   }
 };
-
-setSlugsIfUndefined();
 
 exports.getAllSearches = async (req, res) => {
   try {

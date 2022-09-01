@@ -1,7 +1,7 @@
 const Faq = require("../model/faqModel");
 const slugify = require("slugify");
 
-const setSlugsIfUndefined = async () => {
+exports.setSlugsIfUndefined = async () => {
   try {
     const faqs = await Faq.find({});
     faqs.forEach(async ({ _id, slug, title }) => {
@@ -16,8 +16,6 @@ const setSlugsIfUndefined = async () => {
     console.log("Slugs not created for all faq");
   }
 };
-
-setSlugsIfUndefined();
 
 exports.getAllFaq = async (req, res) => {
   try {

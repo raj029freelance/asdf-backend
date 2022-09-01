@@ -2,7 +2,7 @@ const Organization = require("../model/organizationModal");
 const QueryModel = require("../model/queryModel");
 const slugify = require("slugify");
 
-const setSlugsIfUndefined = async () => {
+exports.setSlugsIfUndefined = async () => {
   try {
     const orgs = await Organization.find({});
     orgs.forEach(async ({ _id, slug, CompanyName, PhoneNumber }) => {
@@ -21,8 +21,6 @@ const setSlugsIfUndefined = async () => {
     console.log("Slugs not created for all organizations");
   }
 };
-
-setSlugsIfUndefined();
 
 exports.getAllOrganization = async (req, res) => {
   try {
