@@ -3,17 +3,26 @@ const Organization = require("../model/organizationModal");
 const slugify = require("slugify");
 
 const setSlugsIfUndefined = async () => {
-  const recents = await Search.find();
-  recents.forEach(async (recent) => {
-    if (recent.slug) return;
-    const { CompanyName, PhoneNumber } = await Organization.findById(
-      recent.organization_id
-    );
-    await Search.updateOne(
-      { _id: recent._id },
-      { $set: { slug: slugify(`${CompanyName.toLowerCase()} ${PhoneNumber}`) } }
-    );
-  });
+  try {
+    const recents = await Search.find();
+    recents.forEach(async (recent) => {
+      if (recent.slug) return;
+      const { CompanyName, PhoneNumber } = await Organization.findById(
+        recent.organization_id
+      );
+      await Search.updateOne(
+        { _id: recent._id },
+        {
+          $set: {
+            slug: slugify(`${CompanyName.toLowerCase()} ${PhoneNumber}`),
+          },
+        }
+      );
+    });
+    console.log("Slugs created for all search");
+  } catch {
+    console.log("Slugs not created for all search");
+  }
 };
 
 setSlugsIfUndefined();

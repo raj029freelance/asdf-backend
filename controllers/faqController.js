@@ -2,14 +2,19 @@ const Faq = require("../model/faqModel");
 const slugify = require("slugify");
 
 const setSlugsIfUndefined = async () => {
-  const faqs = await Faq.find({});
-  faqs.forEach(async ({ _id, slug, title }) => {
-    if (slug) return;
-    await Faq.updateOne(
-      { _id },
-      { $set: { slug: slugify(title.toLowerCase()) } }
-    );
-  });
+  try {
+    const faqs = await Faq.find({});
+    faqs.forEach(async ({ _id, slug, title }) => {
+      if (slug) return;
+      await Faq.updateOne(
+        { _id },
+        { $set: { slug: slugify(title.toLowerCase()) } }
+      );
+    });
+    console.log("Slugs created for all faq");
+  } catch {
+    console.log("Slugs not created for all faq");
+  }
 };
 
 setSlugsIfUndefined();

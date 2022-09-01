@@ -3,14 +3,23 @@ const QueryModel = require("../model/queryModel");
 const slugify = require("slugify");
 
 const setSlugsIfUndefined = async () => {
-  const orgs = await Organization.find({});
-  orgs.forEach(async ({ _id, slug, CompanyName, PhoneNumber }) => {
-    if (slug) return;
-    await Organization.updateOne(
-      { _id },
-      { $set: { slug: slugify(`${CompanyName.toLowerCase()} ${PhoneNumber}`) } }
-    );
-  });
+  try {
+    const orgs = await Organization.find({});
+    orgs.forEach(async ({ _id, slug, CompanyName, PhoneNumber }) => {
+      if (slug) return;
+      await Organization.updateOne(
+        { _id },
+        {
+          $set: {
+            slug: slugify(`${CompanyName.toLowerCase()} ${PhoneNumber}`),
+          },
+        }
+      );
+    });
+    console.log("Slugs created for all organizations");
+  } catch {
+    console.log("Slugs not created for all organizations");
+  }
 };
 
 setSlugsIfUndefined();
