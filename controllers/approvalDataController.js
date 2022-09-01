@@ -1,4 +1,5 @@
 const ApprovalData = require("../model/approvalData");
+const Organization = require("../model/organizationModal");
 const slugify = require("slugify");
 
 exports.getAllData = async (req, res) => {
@@ -35,25 +36,28 @@ exports.addData = async (req, res) => {
 
 exports.approveSubmission = async (req, res) => {
   try {
-    const newOrganization = await Organization.create({
-      ...req.body,
+    const organization = await Organization.create({
+      ...req.body.data,
       slug: slugify(
-        `${req.body.CompanyName.toLowerCase()} ${req.body.PhoneNumber}`
+        `${req.body.data.CompanyName.toLowerCase()} ${
+          req.body.data.PhoneNumber
+        }`
       ),
     });
 
-    await ApprovalData.findByIdAndUpdate(
-      req.params.id,
-      { approved: true },
+    const submission = await ApprovalData.findByIdAndUpdate(
+      req.body.id,
       {
-        new: true,
-      }
+        approved: true,
+      },
+      { new: true }
     );
 
     res.status(200).json({
       status: "success",
       data: {
-        organization: newOrganization,
+        organization,
+        submission,
       },
     });
   } catch (err) {
