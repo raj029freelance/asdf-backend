@@ -1,13 +1,5 @@
 const mongoose = require("mongoose");
-const {
-  setSlugsIfUndefined: faqSlugSetter,
-} = require("../controllers/faqController");
-const {
-  setSlugsIfUndefined: orgSlugSetter,
-} = require("../controllers/organizationController");
-const {
-  setSlugsIfUndefined: searchSlugSetter,
-} = require("../controllers/searchController");
+const { setSlugs } = require("../controllers/setSlugsController");
 
 // Replace this with your MONGOURI.
 
@@ -20,9 +12,7 @@ const InitiateMongoServer = async () => {
       useUnifiedTopology: true,
     });
     console.log("Connected to DB !!");
-    await orgSlugSetter();
-    await faqSlugSetter();
-    await searchSlugSetter();
+    await setSlugs();
   } catch (e) {
     console.log(e);
     throw e;
