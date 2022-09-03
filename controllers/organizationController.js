@@ -115,16 +115,19 @@ exports.createOrganization = async (req, res) => {
 exports.insertAllOrganizations = async (req, res) => {
   try {
     const organizations = req.body;
+
     var subArray = [];
     var existsCheckQuery = { $or: subArray };
     for (var i = 0; i < organizations.length; i++) {
       const name = organizations[i].CompanyName
-        ? organizations[i].CompanyName.split("-")[0].trim()
+        ? organizations[i].CompanyName.trim()
         : "";
-      console.log(name);
-      subArray.push({
-        CompanyName: name,
-      });
+
+      if (name !== undefined && name !== null) {
+        subArray.push({
+          CompanyName: name,
+        });
+      }
     }
     // console.log(existsCheckQuery);
     const doesExists = await Organization.find(existsCheckQuery);
@@ -146,6 +149,7 @@ exports.insertAllOrganizations = async (req, res) => {
       },
     });
   } catch (err) {
+    console.log(err.stack);
     res.status(404).json({
       status: "fail",
       message: err,
