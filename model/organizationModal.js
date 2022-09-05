@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const mongoosePaginate = require("mongoose-paginate-v2");
+const mongoose_fuzzy_searching = require("mongoose-fuzzy-searching");
+
 const organizationSchema = new mongoose.Schema({
   CompanyName: {
     type: String,
@@ -42,5 +44,6 @@ const organizationSchema = new mongoose.Schema({
   },
 });
 organizationSchema.plugin(mongoosePaginate);
+
 const Organization = mongoose.model("Organization", organizationSchema);
 module.exports = Organization;

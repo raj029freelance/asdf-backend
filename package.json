@@ -19,6 +19,7 @@
     "express-validator": "^6.3.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.14",
+    "mongoose-fuzzy-searching": "^2.0.2",
     "mongoose-paginate-v2": "^1.7.0",
     "node-schedule": "^2.1.0",
     "nodemon": "^2.0.19",

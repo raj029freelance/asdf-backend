@@ -1,6 +1,7 @@
 const Organization = require("../model/organizationModal");
 const QueryModel = require("../model/queryModel");
 const slugify = require("slugify");
+const util = require("util");
 
 exports.setSlugsIfUndefined = async () => {
   try {
@@ -22,24 +23,40 @@ exports.setSlugsIfUndefined = async () => {
   }
 };
 
+const escapeRegex = (text) => {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
+
 exports.getAllOrganization = async (req, res) => {
   try {
     const CompanyName = req.query?.name;
-    const words = CompanyName.split(" ");
-    const queryList = [];
-    if (words.length != 0) {
-      words.forEach((word) => {
-        queryList.push({ CompanyName: { $regex: new RegExp(word, "i") } });
-      });
-    }
+    console.log(CompanyName.split(" "));
 
-    var condition = CompanyName ? { $or: queryList } : {};
-    const organizations = await Organization.find(condition);
+    const query = {
+      index: "CompanyName",
+      compound: {
+        should: CompanyName.split(" ").map((word) => ({
+          text: {
+            query: word,
+            path: {
+              wildcard: "*",
+            },
+            fuzzy: {},
+          },
+        })),
+      },
+    };
+
+    const ans = await Organization.aggregate([
+      {
+        $search: query,
+      },
+    ]);
     res.status(200).json({
       status: "success",
-      results: organizations.length,
+      results: ans.length,
       data: {
-        organizations,
+        organizations: ans,
       },
     });
   } catch (err) {
@@ -263,3 +280,5 @@ exports.deleteQuery = async (req, res) => {
     });
   }
 };
+
+exports.deleteAll = async (req, res) => {};
