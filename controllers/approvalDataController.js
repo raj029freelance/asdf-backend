@@ -17,8 +17,22 @@ exports.getAllData = async (req, res) => {
   }
 };
 
+function isANumber(str) {
+  return !/\D/.test(str);
+}
+
 exports.addData = async (req, res) => {
   try {
+    const { PhoneNumber } = req.body;
+    var containsDigits = isANumber(PhoneNumber);
+    if (PhoneNumber.length !== 10 || !containsDigits) {
+      res.status(422).json({
+        status: "fail",
+        message: "Invalid PhoneNumber",
+      });
+      return;
+    }
+
     await ApprovalData.create({
       ...req.body,
     });
