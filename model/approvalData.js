@@ -39,6 +39,10 @@ const approvalDataSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  email: {
+    type: String,
+    required: true,
+  },
 });
 
 const approvalData = mongoose.model("submissions", approvalDataSchema);
