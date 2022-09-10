@@ -12,6 +12,8 @@ const approvalDataRoutes = require("./routes/approvalDataRoutes");
 const setSlugsRoutes = require("./routes/setSlugsRoutes");
 const axios = require("axios");
 const smtpRoutes = require("./routes/smtpRoutes");
+const getBaseUrl = require("./supporters/endpoints");
+const analyticsRoutes = require("./routes/analyticsRoutes");
 
 dotenv.config();
 const InitiateMongoServer = require("./config/db");
@@ -49,17 +51,14 @@ app.use("/api/faq", faqRoutes);
 app.use("/api/submissions", approvalDataRoutes);
 app.use("/api/setSlugs", setSlugsRoutes);
 app.use("/api/contact", smtpRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 app.listen(process.env.PORT || 4000, (req, res) => {
   console.log(`Server Started at PORT ${process.env.PORT}`);
 });
 
 schedule.scheduleJob("0 0 * * *", () => {
-  const environment = process.env.NODE_ENV || "development";
-  const baseUrl =
-    environment === "development"
-      ? `http://localhost:${process.env.PORT}`
-      : "https://frozen-hollows-67475.herokuapp.com";
+  const baseUrl = getBaseUrl();
   axios
     .post(`${baseUrl}/api/setSlugs`, {})
     .then((res) => {

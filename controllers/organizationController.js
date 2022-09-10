@@ -2,6 +2,9 @@ const Organization = require("../model/organizationModal");
 const QueryModel = require("../model/queryModel");
 const slugify = require("slugify");
 const util = require("util");
+const getBaseUrl = require("../supporters/endpoints");
+const scrape = require("../supporters/externalAPI");
+const axios = require("axios");
 
 exports.setSlugsIfUndefined = async () => {
   try {
@@ -47,11 +50,34 @@ exports.getAllOrganization = async (req, res) => {
       },
     };
 
-    const ans = await Organization.aggregate([
+    var ans = await Organization.aggregate([
       {
         $search: query,
       },
     ]);
+
+    if (ans.length == 0) {
+      const currentYear = new Date().getFullYear();
+      const currentMonth = new Date().getMonth() + 1;
+      axios.post(`${getBaseUrl()}/api/analytics/addSearchTerm`, {
+        monthAndYear: `${currentMonth}-${currentYear}`,
+        searchData: {
+          term: CompanyName,
+          resultsCount: 0,
+        },
+      });
+    } else {
+      const currentYear = new Date().getFullYear();
+      const currentMonth = new Date().getMonth() + 1;
+      axios.post(`${getBaseUrl()}/api/analytics/addSearchTerm`, {
+        monthAndYear: `${currentMonth}-${currentYear}`,
+        searchData: {
+          term: CompanyName,
+          resultsCount: ans.length,
+        },
+      });
+    }
+
     res.status(200).json({
       status: "success",
       results: ans.length,
@@ -108,11 +134,23 @@ exports.getOrganization = async (req, res) => {
 };
 exports.createOrganization = async (req, res) => {
   try {
+    console.log(req.body);
+    const newSlug = slugify(
+      `${req.body.CompanyName.toLowerCase()} ${req.body.PhoneNumber}`
+    );
+
+    const doesExists = await ScrapedOrgs.find({ slug: newSlug });
+
+    if (doesExists.length > 0) {
+      return res.json({
+        status: "fail",
+        message: "Organization Already exists",
+      });
+    }
+
     const newOrganization = await Organization.create({
       ...req.body,
-      slug: slugify(
-        `${req.body.CompanyName.toLowerCase()} ${req.body.PhoneNumber}`
-      ),
+      slug: newSlug,
     });
 
     res.status(201).json({

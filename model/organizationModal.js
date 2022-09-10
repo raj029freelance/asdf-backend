@@ -42,6 +42,10 @@ const organizationSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  external: {
+    type: String,
+    default: "false",
+  },
 });
 organizationSchema.plugin(mongoosePaginate);
 
