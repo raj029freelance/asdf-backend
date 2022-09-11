@@ -6,6 +6,12 @@ const getBaseUrl = require("../supporters/endpoints");
 const scrape = require("../supporters/externalAPI");
 const axios = require("axios");
 
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 exports.setSlugsIfUndefined = async () => {
   try {
     const orgs = await Organization.find({});
@@ -56,19 +62,94 @@ exports.getAllOrganization = async (req, res) => {
       },
     ]);
 
+    var data = null;
     if (ans.length == 0) {
-      const currentYear = new Date().getFullYear();
-      const currentMonth = new Date().getMonth() + 1;
-      axios.post(`${getBaseUrl()}/api/analytics/addSearchTerm`, {
-        monthAndYear: `${currentMonth}-${currentYear}`,
-        searchData: {
-          term: CompanyName,
-          resultsCount: 0,
-        },
-      });
-    } else {
-      const currentYear = new Date().getFullYear();
-      const currentMonth = new Date().getMonth() + 1;
+      var knowledgeGraphApiRes = await axios.get(
+        `https://serpapi.com/search.json?engine=google&q=${CompanyName}&api_key=767fedda390da53b3c89d87e6d4e1075a06b447c6f1c73b6180c61beebda62dd`
+      );
+      knowledgeGraphApiRes = knowledgeGraphApiRes.data;
+      // console.log(knowledgeGraphApiRes);
+      const results = {
+        answerBox: {},
+        knowledgeBox: {},
+      };
+
+      // check answer box
+      if (
+        knowledgeGraphApiRes.answer_box !== undefined &&
+        knowledgeGraphApiRes.answer_box !== null
+      ) {
+        results.answerBox.phoneNumber = knowledgeGraphApiRes.answer_box.answer;
+        results.answerBox.link = knowledgeGraphApiRes.answer_box.link;
+        results.answerBox.title = knowledgeGraphApiRes.answer_box.title;
+        results.answerBox.description = knowledgeGraphApiRes.answer_box.snippet;
+      }
+
+      if (
+        knowledgeGraphApiRes.knowledge_graph !== undefined &&
+        knowledgeGraphApiRes.knowledge_graph !== null
+      ) {
+        results.knowledgeBox.title = knowledgeGraphApiRes.knowledge_graph.title;
+        results.knowledgeBox.description =
+          knowledgeGraphApiRes.knowledge_graph.description;
+        results.knowledgeBox.type = knowledgeGraphApiRes.knowledge_graph.type;
+        results.knowledgeBox.phoneNumber =
+          knowledgeGraphApiRes.knowledge_graph.customer_service;
+        results.knowledgeBox.link =
+          knowledgeGraphApiRes.knowledge_graph.customer_service_links[0].link;
+      }
+      if (
+        results.knowledgeBox.phoneNumber !== undefined &&
+        results.knowledgeBox.phoneNumber !== null
+      ) {
+        data = {
+          PhoneNumber: results.knowledgeBox.phoneNumber,
+          CompanyName: results.knowledgeBox.title,
+          CompanyUrl: results.knowledgeBox.link,
+          DepartmentYourCalling: "Customer Service",
+          CallBackAvailable: "NO",
+          CallPickedUpByARealPerson: "YES",
+          description: results.knowledgeBox.description,
+          CallCenterHours: "24 hours, 7 days",
+          BestTimeToDail: "-",
+          external: "true",
+        };
+      } else {
+        data = {
+          PhoneNumber: results.answerBox.phoneNumber,
+          CompanyName: results.answerBox.title,
+          CompanyUrl: results.answerBox.link,
+          DepartmentYourCalling: "Customer Service",
+          CallBackAvailable: "NO",
+          CallPickedUpByARealPerson: "YES",
+          description: results.answerBox.description,
+          CallCenterHours: "24 hours, 7 days",
+          BestTimeToDail: "-",
+          external: "true",
+        };
+      }
+
+      // console.log(results);
+      // add results to DB
+      const addedRes = await axios.post(
+        `${getBaseUrl()}/api/organizations/`,
+        data
+      );
+      // console.log(addedRes);
+    }
+
+    // add searchterm
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1;
+    axios.post(`${getBaseUrl()}/api/analytics/addSearchTerm`, {
+      monthAndYear: `${currentMonth}-${currentYear}`,
+      searchData: {
+        term: CompanyName,
+        resultsCount: 0,
+      },
+    });
+
+    if (ans.length == 0) {
       axios.post(`${getBaseUrl()}/api/analytics/addSearchTerm`, {
         monthAndYear: `${currentMonth}-${currentYear}`,
         searchData: {
@@ -139,7 +220,7 @@ exports.createOrganization = async (req, res) => {
       `${req.body.CompanyName.toLowerCase()} ${req.body.PhoneNumber}`
     );
 
-    const doesExists = await ScrapedOrgs.find({ slug: newSlug });
+    const doesExists = await Organization.find({ slug: newSlug });
 
     if (doesExists.length > 0) {
       return res.json({
