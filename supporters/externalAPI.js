@@ -17,7 +17,7 @@ module.exports = async function scrape(searchText = "") {
     return document.querySelectorAll("span");
   });
 
-  console.log("Dimensions:", title);
+  console.log("Dimensions : ", title);
 
   await browser.close();
 
