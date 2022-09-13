@@ -73,78 +73,104 @@ exports.getAllOrganization = async(req, res) => {
 
         var data = null;
         if (ans.length == 0) {
-            var knowledgeGraphApiRes = await axios.get(
-                `https://serpapi.com/search.json?engine=google&q=${CompanyName}&api_key=${process.env.GOOGLE_API_KEY}`
-            );
-            knowledgeGraphApiRes = knowledgeGraphApiRes.data;
-            // console.log(knowledgeGraphApiRes);
-            const results = {
-                answerBox: {},
-                knowledgeBox: {},
-            };
-
-            // check answer box
-            if (
-                knowledgeGraphApiRes.answer_box !== undefined &&
-                knowledgeGraphApiRes.answer_box !== null
-            ) {
-                results.answerBox.phoneNumber = knowledgeGraphApiRes.answer_box.answer;
-                results.answerBox.link = knowledgeGraphApiRes.answer_box.link;
-                results.answerBox.title = knowledgeGraphApiRes.answer_box.title;
-                results.answerBox.description = knowledgeGraphApiRes.answer_box.snippet;
-            }
-
-            if (
-                knowledgeGraphApiRes.knowledge_graph !== undefined &&
-                knowledgeGraphApiRes.knowledge_graph !== null
-            ) {
-                results.knowledgeBox.title = knowledgeGraphApiRes.knowledge_graph.title;
-                results.knowledgeBox.description =
-                    knowledgeGraphApiRes.knowledge_graph.description;
-                results.knowledgeBox.type = knowledgeGraphApiRes.knowledge_graph.type;
-                results.knowledgeBox.phoneNumber =
-                    knowledgeGraphApiRes.knowledge_graph.customer_service;
-                results.knowledgeBox.link =
-                    knowledgeGraphApiRes.knowledge_graph.customer_service_links[0].link;
-            }
-            if (
-                results.knowledgeBox.phoneNumber !== undefined &&
-                results.knowledgeBox.phoneNumber !== null
-            ) {
-                data = {
-                    PhoneNumber: results.knowledgeBox.phoneNumber,
-                    CompanyName: results.knowledgeBox.title,
-                    CompanyUrl: results.knowledgeBox.link,
-                    DepartmentYourCalling: "Customer Service",
-                    CallBackAvailable: "NO",
-                    CallPickedUpByARealPerson: "YES",
-                    description: results.knowledgeBox.description,
-                    CallCenterHours: "24 hours, 7 days",
-                    BestTimeToDail: "-",
-                    external: "true",
+            try {
+                console.log("calling google api");
+                const knowledgeGraphApi = await axios.get(
+                    `https://serpapi.com/search.json?engine=google&q=${CompanyName}+customer+care+number&api_key=${process.env.GOOGLE_API_KEY}`
+                );
+                const knowledgeGraphApiRes = knowledgeGraphApi.data;
+                console.log(knowledgeGraphApiRes);
+                // console.log(knowledgeGraphApiRes);
+                const results = {
+                    answerBox: {},
+                    knowledgeBox: {},
                 };
-            } else {
-                data = {
-                    PhoneNumber: results.answerBox.phoneNumber,
-                    CompanyName: results.answerBox.title,
-                    CompanyUrl: results.answerBox.link,
-                    DepartmentYourCalling: "Customer Service",
-                    CallBackAvailable: "NO",
-                    CallPickedUpByARealPerson: "YES",
-                    description: results.answerBox.description,
-                    CallCenterHours: "24 hours, 7 days",
-                    BestTimeToDail: "-",
-                    external: "true",
-                };
-            }
+                console.log("dec");
+                // check answer box
+                if (
+                    knowledgeGraphApiRes.answer_box !== undefined &&
+                    knowledgeGraphApiRes.answer_box !== null
+                ) {
+                    console.log("hiy");
+                    results.answerBox.phoneNumber =
+                        knowledgeGraphApiRes.answer_box.answer;
+                    results.answerBox.link = knowledgeGraphApiRes.answer_box.link;
+                    results.answerBox.title = knowledgeGraphApiRes.answer_box.title;
+                    results.answerBox.description =
+                        knowledgeGraphApiRes.answer_box.snippet;
+                    console.log("end hit");
+                }
+                if (
+                    knowledgeGraphApiRes.knowledge_graph !== undefined &&
+                    knowledgeGraphApiRes.knowledge_graph !== null
+                ) {
+                    console.log("dgdg");
 
-            // console.log(results);
-            // add results to DB
-            const addedRes = await axios.post(
-                `${getBaseUrl()}/api/organizations/`,
-                data
-            );
-            // console.log(addedRes);
+                    results.knowledgeBox.title =
+                        knowledgeGraphApiRes.knowledge_graph.title;
+                    results.knowledgeBox.description =
+                        knowledgeGraphApiRes.knowledge_graph.description;
+                    results.knowledgeBox.type = knowledgeGraphApiRes.knowledge_graph.type;
+                    results.knowledgeBox.phoneNumber =
+                        knowledgeGraphApiRes.knowledge_graph.customer_service;
+                    results.knowledgeBox.link =
+                        knowledgeGraphApiRes.knowledge_graph.customer_service_links !==
+                        undefined ?
+                        knowledgeGraphApiRes.knowledge_graph.customer_service_links[0]
+                        .link :
+                        "";
+                    console.log("fgshf");
+                }
+                if (
+                    results.knowledgeBox.phoneNumber !== undefined &&
+                    results.knowledgeBox.phoneNumber !== null
+                ) {
+                    data = {
+                        PhoneNumber: results.knowledgeBox.phoneNumber,
+                        CompanyName: results.knowledgeBox.title,
+                        CompanyUrl: results.knowledgeBox.link,
+                        DepartmentYourCalling: "Customer Service",
+                        CallBackAvailable: "NO",
+                        CallPickedUpByARealPerson: "YES",
+                        description: results.knowledgeBox.description,
+                        CallCenterHours: "24 hours, 7 days",
+                        BestTimeToDail: "-",
+                        external: "true",
+                    };
+                } else {
+                    data = {
+                        PhoneNumber: results.answerBox.phoneNumber,
+                        CompanyName: results.answerBox.title,
+                        CompanyUrl: results.answerBox.link,
+                        DepartmentYourCalling: "Customer Service",
+                        CallBackAvailable: "NO",
+                        CallPickedUpByARealPerson: "YES",
+                        description: results.answerBox.description,
+                        CallCenterHours: "24 hours, 7 days",
+                        BestTimeToDail: "-",
+                        external: "true",
+                    };
+                }
+                console.log("data", data);
+
+                // console.log(results);
+                // add results to DB
+                if (data.PhoneNumber !== undefined) {
+                    const addedRes = await axios.post(
+                        `${getBaseUrl()}/api/organizations/`,
+                        data
+                    );
+                }
+                // console.log(addedRes);
+            } catch {
+                return res.status(200).json({
+                    status: "success",
+                    results: ans.length,
+                    data: {
+                        organizations: ans,
+                    },
+                });
+            }
         }
 
         // add searchterm
