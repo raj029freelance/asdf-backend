@@ -207,6 +207,7 @@ exports.getAllOrganization = async(req, res) => {
     if (fuzzyResults.length > 0) {
         return sendAutoCompleteResults(fuzzyResults, res);
     }
+    return [];
 };
 
 exports.getPaginatedOrganization = async(req, res) => {
