@@ -173,6 +173,7 @@ const getFuzzyResults = async(CompanyName) => {
         var ans = await Organization.aggregate([{
             $search: query,
         }, ]);
+        // console.log(ans);
 
         return ans;
     } catch {
@@ -207,7 +208,7 @@ exports.getAllOrganization = async(req, res) => {
     if (fuzzyResults.length > 0) {
         return sendAutoCompleteResults(fuzzyResults, res);
     }
-    return [];
+    return sendAutoCompleteResults([], res);
 };
 
 exports.getPaginatedOrganization = async(req, res) => {
