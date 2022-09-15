@@ -10,6 +10,10 @@ const SearchSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  organization_number: {
+    type: String,
+    required: true,
+  },
   slug: {
     type: String,
     required: true,
