@@ -14,6 +14,7 @@ const axios = require("axios");
 const smtpRoutes = require("./routes/smtpRoutes");
 const getBaseUrl = require("./supporters/endpoints");
 const analyticsRoutes = require("./routes/analyticsRoutes");
+const deviceTokenRoutes = require("./routes/deviceTokenRoutes");
 
 dotenv.config();
 const InitiateMongoServer = require("./config/db");
@@ -52,6 +53,7 @@ app.use("/api/submissions", approvalDataRoutes);
 app.use("/api/setSlugs", setSlugsRoutes);
 app.use("/api/contact", smtpRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use("/api/deviceToken", deviceTokenRoutes);
 
 app.listen(process.env.PORT || 4000, (req, res) => {
   console.log(`Server Started at PORT ${process.env.PORT}`);
