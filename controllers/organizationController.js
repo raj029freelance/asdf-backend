@@ -63,10 +63,10 @@ const getExactSearch = async(CompanyName) => {
 const getResultsFromGoogle = async(CompanyName, res) => {
     try {
         const knowledgeGraphApi = await axios.get(
-            `https://serpapi.com/search.json?engine=google&q=${CompanyName}+customer+care+number&api_key=${process.env.GOOGLE_API_KEY}`
+            `https://serpapi.com/search.json?engine=google&q=${CompanyName}+customer+care+number&location=Delhi,+India&gl=in&google_domain=google.co.in&hl=en&api_key=${process.env.GOOGLE_API_KEY}`
         );
         const knowledgeGraphApiRes = knowledgeGraphApi.data;
-        // console.log(knowledgeGraphApiRes);
+        console.log(knowledgeGraphApiRes);
         // console.log(knowledgeGraphApiRes);
         const results = {
             answerBox: {},
@@ -254,7 +254,13 @@ exports.createOrganization = async(req, res) => {
             `${req.body.CompanyName.toLowerCase()} ${req.body.PhoneNumber}`
         );
 
-        const doesExists = await Organization.find({ slug: newSlug });
+        const doesExists = await Organization.find({
+            $or: [
+                { slug: newSlug },
+                { CompanyName: req.body.CompanyName },
+                { PhoneNumber: req.body.PhoneNumber },
+            ],
+        });
 
         if (doesExists.length > 0) {
             return res.json({
