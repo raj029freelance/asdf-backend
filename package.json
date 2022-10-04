@@ -29,6 +29,8 @@
     "puppeteer-extra": "^3.3.4",
     "puppeteer-extra-plugin-stealth": "^2.11.1",
     "react-toastify": "^9.0.7",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6",
     "slugify": "^1.6.5"
   }
 }
