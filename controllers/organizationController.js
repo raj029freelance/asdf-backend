@@ -258,7 +258,7 @@ exports.getAllOrganization = async(req, res) => {
             resultsCount: 0,
         },
     });
-    return sendAutoCompleteResults([], res);
+    return sendAutoCompleteResults(CompanyName,[], res);
 };
 
 exports.getPaginatedOrganization = async(req, res) => {
