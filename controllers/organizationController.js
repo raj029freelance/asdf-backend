@@ -239,7 +239,7 @@ exports.getAllOrganization = async(req, res) => {
         console.log("Calling google API");
         const resultsFromGoogle = await getResultsFromGoogle(CompanyName, res);
         if (resultsFromGoogle.length > 0) {
-            return sendAutoCompleteResults(CompayName, resultsFromGoogle, res);
+            return sendAutoCompleteResults(CompanyName, resultsFromGoogle, res);
         }
     }
 
