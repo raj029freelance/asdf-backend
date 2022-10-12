@@ -64,7 +64,7 @@ const getExactSearch = async(CompanyName) => {
 const getResultsFromGoogle = async(CompanyName, res) => {
     try {
         const resData = await reqPromise({
-            url: `https://www.google.co.in/search?q=${CompanyName}+customer+care&gl=in&lum_json=1&hl=en`,
+            url: `https://www.google.co.in/search?q=${CompanyName}+customer+care+number&gl=in&lum_json=1&hl=en`,
             proxy: "http://lum-customer-hl_55d2f349-zone-serp:jjp3557px8vg@zproxy.lum-superproxy.io:22225",
             rejectUnauthorized: false,
         });
