@@ -73,7 +73,7 @@ const getResultsFromGoogle = async(CompanyName, res) => {
 
         const knowledgeGraphApiRes = JSON.parse(resData);
 
-        console.log(knowledgeGraphApiRes);
+        // console.log(knowledgeGraphApiRes);
         // console.log(knowledgeGraphApiRes);
         // console.log(Object.keys(knowledgeGraphApiRes));
         const results = {
@@ -152,7 +152,7 @@ const getResultsFromGoogle = async(CompanyName, res) => {
                 external: "true",
             };
         }
-        console.log(data);
+        console.log("Final Data", data);
         // insert to db
 
         if (data.PhoneNumber !== undefined && data.PhoneNumber !== undefined) {
@@ -228,7 +228,7 @@ const sendAutoCompleteResults = (CompanyName, orgsList, res) => {
 };
 
 exports.getAllOrganization = async(req, res) => {
-    const CompanyName = req.query.name;
+    const CompanyName = req.query.name.toLowerCase();
     const skipExternalFetch = req.query.external;
     const exactMatchResults = await getExactSearch(CompanyName);
     if (exactMatchResults.length > 0) {
