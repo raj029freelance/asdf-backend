@@ -51,9 +51,17 @@ exports.getExternalOrgs = async(req, res) => {
 
 const getExactSearch = async(CompanyName) => {
     try {
-        var regexExpression = new RegExp(["^", CompanyName, "$"].join(""), "i");
+
+        const regexExpression = new RegExp(["^", CompanyName, "$"].join(""), "i");
+        const regexArr = [regexExpression]
+        CompanyName.split(" ").forEach((word)=>{
+            if(word.length<3)continue;
+            const regex=new RegExp(["^", word, "$"].join(""), "i");
+            regexArr.push(regex)
+        })
+
         const searchResults = await Organization.find({
-            CompanyName: regexExpression,
+            $or:regexArr
         });
         return searchResults;
     } catch {
@@ -229,6 +237,9 @@ const sendAutoCompleteResults = (CompanyName, orgsList, res) => {
 
 exports.getAllOrganization = async(req, res) => {
     const CompanyName = req.query.name.toLowerCase();
+
+    if(!CompanyName || CompanyName.trim().length==0) return sendAutoCompleteResults(CompanyName,[], res);
+
     const skipExternalFetch = req.query.external;
     const exactMatchResults = await getExactSearch(CompanyName);
     if (exactMatchResults.length > 0) {
