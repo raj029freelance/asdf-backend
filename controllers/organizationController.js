@@ -54,11 +54,12 @@ const getExactSearch = async(CompanyName) => {
 
         const regexExpression = new RegExp(["^", CompanyName, "$"].join(""), "i");
         const regexArr = [regexExpression]
-        CompanyName.split(" ").forEach((word)=>{
-            if(word.length<3)return;
-            const regex=new RegExp(["^", word, "$"].join(""), "i");
-            regexArr.push(regex)
-        })
+        
+        // CompanyName.split(" ").forEach((word)=>{
+        //     if(word.length<3)return;
+        //     const regex=new RegExp(["^", word, "$"].join(""), "i");
+        //     regexArr.push(regex)
+        // })
 
         const searchResults = await Organization.find({
             $or:regexArr
