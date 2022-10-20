@@ -191,12 +191,14 @@ const getResultsFromGoogle = async(CompanyName, res) => {
 
 const getFuzzyResults = async(CompanyName) => {
     try {
+        //Amazon.com something
+        let modifiedCompanyName = CompanyName.replace(".com","")
         const query = {
             index: "CompanyName",
             compound: {
                 should: CompanyName.split(" ").map((word) => ({
                     text: {
-                        query: word,
+                        query: word.split(".")[0]??"",
                         path: {
                             wildcard: "*",
                         },
@@ -237,7 +239,7 @@ const sendAutoCompleteResults = (CompanyName, orgsList, res) => {
 };
 
 exports.getAllOrganization = async(req, res) => {
-    const CompanyName = req.query.name.toLowerCase();
+    const CompanyName = req.query.name.trim().toLowerCase();
 
     if(!CompanyName || CompanyName.trim().length==0) return sendAutoCompleteResults(CompanyName,[], res);
 
