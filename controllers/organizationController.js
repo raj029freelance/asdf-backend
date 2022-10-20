@@ -176,6 +176,7 @@ const getResultsFromGoogle = async(CompanyName, res) => {
 
             const addNewOrg = new Organization({
                 ...data,
+                CompanyName: data.CompanyName.replace('.com', '').replace('.in', '').replace('.org', ''),
                 slug: newSlug,
             });
             const savedOrg = await addNewOrg.save();
@@ -313,7 +314,8 @@ exports.getOrganization = async(req, res) => {
 };
 exports.createOrganization = async(req, res) => {
     try {
-        console.log(req.body);
+        #console.log(req.body);
+        req.body.CompanyName = req.body.CompanyName.replace('.com', '').replace('.in', '').replace('.org', '');
         const newSlug = slugify(
             `${req.body.CompanyName.toLowerCase()} ${req.body.PhoneNumber}`
         );
