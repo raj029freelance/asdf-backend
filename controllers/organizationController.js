@@ -194,7 +194,7 @@ const getFuzzyResults = async(CompanyName) => {
         const query = {
             index: "CompanyName",
             compound: {
-                should: CompanyName.split(" ").map((word) => ({
+                should: CompanyName.split(" ").split(".").map((word) => ({
                     text: {
                         query: word,
                         path: {
