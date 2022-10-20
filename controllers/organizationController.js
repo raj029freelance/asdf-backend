@@ -220,6 +220,21 @@ const getFuzzyResults = async(CompanyName) => {
     }
 };
 
+const getRegexResults = async(CompanyName) => {
+    try {
+        const subQueries = CompanyName.split(" ").map((word) => ({
+            $regex: word,
+            $options: "i",
+        }));
+        console.log(subQueries);
+
+        const queryResults = await Organization.find({ $or: subQueries });
+        return queryResults;
+    } catch (err) {
+        return [];
+    }
+};
+
 const sendAutoCompleteResults = (CompanyName, orgsList, res) => {
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1;
@@ -257,12 +272,30 @@ exports.getAllOrganization = async(req, res) => {
             return sendAutoCompleteResults(CompanyName, resultsFromGoogle, res);
         }
     }
-
+    
+    var fuzzyAndRegexResults = []
+    
+    console.log("Calling Regex");
+    const regexResults = await getRegexResults(CompanyName);
+    if (regexResults.length > 0) {
+        fuzzyAndRegexResults = [
+            ...fuzzyAndRegexResults,
+            ...regexResults.filter((result) => !fuzzyAndRegexResults.includes(result)),
+        ];
+        // searchResults.push(regexResults);
+    }
+    
     console.log("Calling fuzzy");
     const fuzzyResults = await getFuzzyResults(CompanyName);
     if (fuzzyResults.length > 0) {
-        return sendAutoCompleteResults(CompanyName, fuzzyResults, res);
+        fuzzyAndRegexResults = [
+            ...fuzzyAndRegexResults,
+            ...fuzzyResults.filter((result) => !fuzzyAndRegexResults.includes(result)),
+        ];
+        return sendAutoCompleteResults(CompanyName, fuzzyAndRegexResults, res);
     }
+    
+    
 
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1;
