@@ -314,7 +314,7 @@ exports.getOrganization = async(req, res) => {
 };
 exports.createOrganization = async(req, res) => {
     try {
-        #console.log(req.body);
+        //console.log(req.body);
         req.body.CompanyName = req.body.CompanyName.replace('.com', '').replace('.in', '').replace('.org', '');
         const newSlug = slugify(
             `${req.body.CompanyName.toLowerCase()} ${req.body.PhoneNumber}`
