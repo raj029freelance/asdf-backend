@@ -182,6 +182,7 @@ const getResultsFromGoogle = async(CompanyName, res) => {
 
             const addNewOrg = new Organization({
                 ...data,
+                CompanyName: data.CompanyName.replace('.com', '').replace('.in', '').replace('.org', ''),
                 slug: newSlug,
             });
             const savedOrg = await addNewOrg.save();
@@ -219,6 +220,21 @@ const getFuzzyResults = async(CompanyName) => {
 
         return ans;
     } catch {
+        return [];
+    }
+};
+
+const getRegexResults = async(CompanyName) => {
+    try {
+        const subQueries = CompanyName.split(" ").map((word) => ({
+            $regex: word,
+            $options: "i",
+        }));
+        console.log(subQueries);
+
+        const queryResults = await Organization.find({ $or: subQueries });
+        return queryResults;
+    } catch (err) {
         return [];
     }
 };
@@ -410,7 +426,8 @@ exports.getOrganization = async(req, res) => {
 };
 exports.createOrganization = async(req, res) => {
     try {
-        console.log(req.body);
+        //console.log(req.body);
+        req.body.CompanyName = req.body.CompanyName.replace('.com', '').replace('.in', '').replace('.org', '');
         const newSlug = slugify(
             `${req.body.CompanyName.toLowerCase()} ${req.body.PhoneNumber}`
         );
