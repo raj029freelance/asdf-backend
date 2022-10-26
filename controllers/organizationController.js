@@ -364,7 +364,7 @@ exports.getAllOrganization = async(req, res) => {
 
     searchResults = await isValidResults(searchResults, CompanyName)
     if (searchResults.length > 0) {
-        return sendAutoCompleteResults(CompanyName, searchResults, res);
+        return sendAutoCompleteResults(CompanyName, searchResults.slice(0, 12), res);
     }
 
     if (!skipExternalFetch) {
@@ -385,7 +385,7 @@ exports.getAllOrganization = async(req, res) => {
         },
     });
 
-    return sendAutoCompleteResults(CompanyName, searchResults, res);
+    return sendAutoCompleteResults(CompanyName, searchResults.slice(0, 12), res);
 };
 
 exports.getPaginatedOrganization = async(req, res) => {
