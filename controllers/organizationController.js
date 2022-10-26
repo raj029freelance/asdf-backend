@@ -224,20 +224,7 @@ const getFuzzyResults = async(CompanyName) => {
     }
 };
 
-const getRegexResults = async(CompanyName) => {
-    try {
-        const subQueries = CompanyName.split(" ").map((word) => ({
-            $regex: word,
-            $options: "i",
-        }));
-        console.log(subQueries);
 
-        const queryResults = await Organization.find({ $or: subQueries });
-        return queryResults;
-    } catch (err) {
-        return [];
-    }
-};
 
 const sendAutoCompleteResults = (CompanyName, orgsList, res) => {
     const currentYear = new Date().getFullYear();
